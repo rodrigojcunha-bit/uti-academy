@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UTI Academy — Coordenação UTI Adulto</title>
+  <style>
+    :root {
+      --primary: #0f4c75;
+      --primary-dark: #0a3352;
+      --primary-light: #1b6ca8;
+      --accent: #1b8fca;
+      --accent-light: #e8f4fc;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --danger: #dc2626;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --gray-900: #0f172a;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-md: 0 10px 15px rgba(0,0,0,0.08), 0 4px 6px rgba(0,0,0,0.05);
+      --shadow-lg: 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-800);
+      min-height: 100vh;
+    }
+
+    /* ===== LOGIN ===== */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+    }
+
+    .login-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 40px;
+      color: white;
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .login-logo-icon {
+      width: 64px;
+      height: 64px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .login-logo-text h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .login-logo-text p {
+      font-size: 13px;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+
+    .login-tagline {
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-tagline h2 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .login-tagline p {
+      font-size: 14px;
+      opacity: 0.75;
+      line-height: 1.6;
+    }
+
+    .login-features {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 32px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .login-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .login-feature span:first-child { font-size: 18px; }
+
+    .login-right {
+      width: 480px;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 48px;
+      box-shadow: -20px 0 60px rgba(0,0,0,0.15);
+    }
+
+    .login-form-header {
+      margin-bottom: 32px;
+    }
+
+    .login-form-header h2 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 6px;
+    }
+
+    .login-form-header p {
+      font-size: 14px;
+      color: var(--gray-500);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius);
+      font-size: 14px;
+      color: var(--gray-800);
+      background: var(--gray-50);
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(27,143,202,0.12);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(15,76,117,0.3);
+      margin-top: 4px;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(15,76,117,0.35);
+    }
+
+    .btn-login:active { transform: translateY(0); }
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      color: var(--gray-400);
+      font-size: 12px;
+    }
+
+    .login-divider::before, .login-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gray-200);
+    }
+
+    .demo-accounts {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+
+    .demo-accounts p {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-bottom: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .demo-account-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--gray-700);
+      transition: all 0.15s;
+      margin-bottom: 6px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .demo-account-btn:last-child { margin-bottom: 0; }
+
+    .demo-account-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--primary);
+    }
+
+    .demo-account-btn .role-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .role-badge.medico { background: var(--accent-light); color: var(--primary); }
+    .role-badge.admin { background: #fef3c7; color: #92400e; }
+
+    .login-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: var(--danger);
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* ===== APP LAYOUT ===== */
+    #app {
+      display: none;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* TOP NAV */
+    .topnav {
+      background: var(--primary-dark);
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      height: 60px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topnav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .topnav-brand-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .topnav-brand span { opacity: 0.6; font-weight: 400; margin-left: 4px; font-size: 13px; }
+
+    .topnav-tabs {
+      display: flex;
+      margin-left: 32px;
+      height: 100%;
+    }
+
+    .topnav-tab {
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.65);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .topnav-tab:hover { color: white; background: rgba(255,255,255,0.05); }
+
+    .topnav-tab.active {
+      color: white;
+      border-bottom-color: #38bdf8;
+    }
+
+    .topnav-tab .tab-icon { font-size: 16px; }
+
+    .topnav-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 5px 12px 5px 5px;
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .user-name { font-size: 13px; font-weight: 500; }
+
+    .btn-logout {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover { background: rgba(255,255,255,0.18); }
+
+    /* ===== TAB CONTENT ===== */
+    .tab-content { display: none; }
+    .tab-content.active { display: flex; }
+
+    /* ===== AULAS TAB ===== */
+    #tab-aulas {
+      flex-direction: row;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: white;
+      border-right: 1px solid var(--gray-200);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .sidebar-header h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray-700);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .overall-progress {
+      background: var(--gray-100);
+      border-radius: var(--radius);
+      padding: 12px;
+    }
+
+    .overall-progress p {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-bottom: 6px;
+    }
+
+    .progress-bar-wrap {
+      background: var(--gray-200);
+      border-radius: 99px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.4s ease;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+    }
+
+    .progress-label span {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .progress-label strong {
+      font-size: 12px;
+      color: var(--primary);
+    }
+
+    .module-list { padding: 12px; }
+
+    .module-item {
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+
+    .module-item:hover {
+      background: var(--gray-50);
+      border-color: var(--gray-200);
+    }
+
+    .module-item.active {
+      background: var(--accent-light);
+      border-color: rgba(27,143,202,0.25);
+    }
+
+    .module-status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .module-status-dot.concluido { background: var(--success); }
+    .module-status-dot.andamento { background: var(--warning); }
+    .module-status-dot.nao-iniciado { background: var(--gray-300); }
+
+    .module-info { flex: 1 }
+
+    .module-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .module-item.active .module-name { color: var(--primary); }
+
+    .module-meta {
+      font-size: 11px;
+      color: var(--gray-400);
+      margin-top: 2px;
+    }
+
+    .module-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .module-badge.concluido { background: var(--success-light); color: var(--success); }
+    .module-badge.andamento { background: var(--warning-light); color: var(--warning); }
+    .module-badge.nao-iniciado { background: var(--gray-100); color: var(--gray-400); }
+
+    /* Main content */
+    .aulas-main {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--gray-100);
+    }
+
+    .video-section {
+      background: #0a0a0a;
+      position: relative;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 45%;
+      height: 0;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-placeholder {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0a1628 0%, #0f2847 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .video-placeholder-icon {
+      width: 72px;
+      height: 72px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+      border: 2px solid rgba(255,255,255,0.12);
+    }
+
+    .video-placeholder h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .video-placeholder p {
+      font-size: 13px;
+      opacity: 0.5;
+    }
+
+    .lesson-list-section { padding: 20px; }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lesson-card {
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .lesson-card:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+
+    .lesson-card.playing {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .lesson-number {
+      width: 32px;
+      height: 32px;
+      background: var(--gray-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray-500);
+      flex-shrink: 0;
+    }
+
+    .lesson-card.playing .lesson-number {
+      background: var(--accent);
+      color: white;
+    }
+
+    .lesson-card.concluida .lesson-number {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .lesson-info { flex: 1 }
+
+    .lesson-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+
+    .lesson-meta {
+      font-size: 12px;
+      color: var(--gray-400);
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .lesson-status {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .lesson-status.concluida { color: var(--success); }
+    .lesson-status.andamento { color: var(--warning); }
+    .lesson-status.pendente { color: var(--gray-400); }
+
+    /* ===== PROGRESSO TAB ===== */
+    #tab-progresso {
+      flex-direction: column;
+      padding: 28px;
+      overflow-y: auto;
+      max-height: calc(100vh - 60px);
+      background: var(--gray-100);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .metric-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .metric-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .metric-icon.blue { background: var(--accent-light); }
+    .metric-icon.green { background: var(--success-light); }
+    .metric-icon.amber { background: var(--warning-light); }
+
+    .metric-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--gray-900);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .metric-label {
+      font-size: 13px;
+      color: var(--gray-500);
+    }
+
+    .section-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-200);
+      margin-bottom: 20px;
+    }
+
+    .section-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cert-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .cert-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+    }
+
+    .cert-icon {
+      width: 40px;
+      height: 40px;
+      background: #fef9c3;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .cert-info { flex: 1 }
+
+    .cert-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+
+    .cert-date {
+      font-size: 12px;
+      color: var(--gray-400);
+      margin-top: 2px;
+    }
+
+    .btn-download {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+
+    .btn-download:hover { background: var(--primary-light); transform: translateY(-1px); }
+
+    .module-progress-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .module-progress-item {
+      padding: 14px 16px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+    }
+
+    .module-progress-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .module-progress-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-700);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .module-progress-pct {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* ===== ADMIN TAB ===== */
+    #tab-admin {
+      flex-direction: column;
+      padding: 28px;
+      overflow-y: auto;
+      max-height: calc(100vh - 60px);
+      background: var(--gray-100);
+    }
+
+    #tab-admin .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    #tab-admin .admin-header h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--gray-900);
+    }
+
+    #tab-admin .admin-header p {
+      font-size: 14px;
+      color: var(--gray-500);
+      margin-top: 2px;
+    }
+
+    .admin-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .admin-metric {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-200);
+      text-align: center;
+    }
+
+    .admin-metric .num {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .admin-metric .num.blue { color: var(--primary); }
+    .admin-metric .num.green { color: var(--success); }
+    .admin-metric .num.amber { color: var(--warning); }
+    .admin-metric .num.red { color: var(--danger); }
+
+    .admin-metric .label {
+      font-size: 12px;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
+
+    .table-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+    }
+
+    .table-card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .table-card-header h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+
+    .table-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 6px 12px;
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+
+    .table-search input {
+      border: none;
+      background: none;
+      outline: none;
+      font-size: 13px;
+      color: var(--gray-700);
+      width: 180px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      padding: 11px 20px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--gray-50);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--gray-100);
+      transition: background 0.12s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--gray-50); }
+
+    tbody td {
+      padding: 13px 20px;
+      font-size: 13px;
+      color: var(--gray-700);
+    }
+
+    .td-name { font-weight: 600; color: var(--gray-900); }
+
+    .td-progress {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .td-progress .progress-bar-wrap {
+      width: 100px;
+    }
+
+    .td-progress span {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-600);
+      min-width: 32px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .status-pill.concluido { background: var(--success-light); color: var(--success); }
+    .status-pill.andamento { background: var(--warning-light); color: var(--warning); }
+    .status-pill.nao-iniciou { background: var(--gray-100); color: var(--gray-500); }
+    .status-pill::before { content: '●'; font-size: 8px; }
+
+    /* Modal certificado */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.show { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      width: 480px;
+      max-width: 90vw;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.95);
+      transition: transform 0.2s;
+    }
+
+    .modal-overlay.show .modal { transform: scale(1); }
+
+    .modal-icon {
+      width: 64px;
+      height: 64px;
+      background: #fef9c3;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 16px;
+    }
+
+    .modal h2 {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 6px;
+    }
+
+    .modal p {
+      text-align: center;
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-modal-primary {
+      flex: 1;
+      padding: 11px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-modal-primary:hover { background: var(--primary-light); }
+
+    .btn-modal-secondary {
+      flex: 1;
+      padding: 11px;
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-modal-secondary:hover { background: var(--gray-200); }
+
+    /* Notification toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--gray-900);
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: var(--success); }
+
+    /* Loading */
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gray-400); }
+
+    /* Admin only tab */
+    .admin-only-tab { display: none; }
+
+    @media (max-width: 768px) {
+      .login-left { display: none; }
+      .login-right { width: 100%; padding: 32px 24px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .admin-metrics { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ==================== LOGIN ==================== -->
+<div id="login-screen">
+  <div class="login-left">
+    <div class="login-logo">
+      <div class="login-logo-icon">🏥</div>
+      <div class="login-logo-text">
+        <h1>UTI Academy</h1>
+        <p>Coordenação UTI Adulto • MG</p>
+      </div>
+    </div>
+    <div class="login-tagline">
+      <h2>Ensino contínuo para medicina intensiva de excelência</h2>
+      <p>Acesse protocolos clínicos, aulas em vídeo e acompanhe sua evolução em qualquer lugar.</p>
+    </div>
+    <div class="login-features">
+      <div class="login-feature">
+        <span>🎓</span>
+        <span>Módulos estruturados por especialidade</span>
+      </div>
+      <div class="login-feature">
+        <span>📊</span>
+        <span>Acompanhamento de progresso em tempo real</span>
+      </div>
+      <div class="login-feature">
+        <span>🏆</span>
+        <span>Certificados automáticos ao concluir módulos</span>
+      </div>
+      <div class="login-feature">
+        <span>📱</span>
+        <span>Acesse de qualquer dispositivo</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-right">
+    <div class="login-form-header">
+      <h2>Bem-vindo de volta</h2>
+      <p>Entre com seu e-mail institucional para continuar</p>
+    </div>
+
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>E-mail institucional</label>
+        <input type="email" id="email-input" placeholder="seu@hospital.com.br" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" id="password-input" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn-login" id="btn-login">
+        Entrar na plataforma
+      </button>
+      <div class="login-error" id="login-error">E-mail ou senha incorretos. Tente novamente.</div>
+    </form>
+
+    <div class="login-divider">Contas de demonstração</div>
+
+    <div class="demo-accounts">
+      <p>🔑 Clique para preencher automaticamente</p>
+      <button class="demo-account-btn" onclick="fillDemo('medico@hospital.com.br', '123456')">
+        <span>👨‍⚕️ Dr. Carlos Mendes — medico@hospital.com.br</span>
+        <span class="role-badge medico">Médico</span>
+      </button>
+      <button class="demo-account-btn" onclick="fillDemo('maria@hospital.com.br', '123456')">
+        <span>👩‍⚕️ Dra. Ana Paula — maria@hospital.com.br</span>
+        <span class="role-badge medico">Médico</span>
+      </button>
+      <button class="demo-account-btn" onclick="fillDemo('admin@hospital.com.br', '123456')">
+        <span>⚙️ Coordenador UTI — admin@hospital.com.br</span>
+        <span class="role-badge admin">Admin</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== APP ==================== -->
+<div id="app">
+
+  <!-- TOP NAV -->
+  <nav class="topnav">
+    <div class="topnav-brand">
+      <div class="topnav-brand-icon">🏥</div>
+      UTI Academy <span id="nav-subtitle">Coordenação UTI Adulto</span>
+    </div>
+
+    <div class="topnav-tabs">
+      <div class="topnav-tab active" data-tab="aulas" onclick="switchTab('aulas')">
+        <span class="tab-icon">📚</span> Minhas Aulas
+      </div>
+      <div class="topnav-tab" data-tab="progresso" onclick="switchTab('progresso')">
+        <span class="tab-icon">📊</span> Meu Progresso
+      </div>
+      <div class="topnav-tab admin-only-tab" data-tab="admin" onclick="switchTab('admin')">
+        <span class="tab-icon">⚙️</span> Painel Admin
+      </div>
+    </div>
+
+    <div class="topnav-right">
+      <div class="user-badge">
+        <div class="user-avatar" id="user-avatar-initials">CM</div>
+        <span class="user-name" id="nav-user-name">Dr. Carlos Mendes</span>
+      </div>
+      <button class="btn-logout" onclick="handleLogout()">Sair</button>
+    </div>
+  </nav>
+
+  <!-- ===== TAB: AULAS ===== -->
+  <div class="tab-content active" id="tab-aulas">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h3>Módulos</h3>
+        <div class="overall-progress">
+          <p>Progresso geral</p>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="overall-progress-bar" style="width: 38%"></div>
+          </div>
+          <div class="progress-label">
+            <span id="progress-text">3 de 6 módulos</span>
+            <strong id="progress-pct">38%</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="module-list" id="module-list"></div>
+    </aside>
+
+    <!-- Main -->
+    <main class="aulas-main">
+      <div class="video-section">
+        <div class="video-container">
+          <div class="video-placeholder" id="video-placeholder">
+            <div class="video-placeholder-icon">▶️</div>
+            <h3 id="video-placeholder-title">Selecione uma aula</h3>
+            <p>Escolha um módulo e uma aula na barra lateral</p>
+          </div>
+          <iframe id="youtube-iframe" style="display:none"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="lesson-list-section">
+        <div class="section-title" id="current-module-title">
+          📋 Selecione um módulo
+        </div>
+        <div id="lesson-list"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== TAB: PROGRESSO ===== -->
+  <div class="tab-content" id="tab-progresso">
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon blue">📹</div>
+        <div>
+          <div class="metric-value" id="metric-aulas">14</div>
+          <div class="metric-label">Aulas concluídas</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon green">⏱️</div>
+        <div>
+          <div class="metric-value" id="metric-horas">8,5h</div>
+          <div class="metric-label">Horas assistidas</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon amber">🏆</div>
+        <div>
+          <div class="metric-value" id="metric-certs">2</div>
+          <div class="metric-label">Certificados emitidos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3>🏆 Meus certificados</h3>
+      <div class="cert-list" id="cert-list"></div>
+    </div>
+
+    <div class="section-card">
+      <h3>📈 Progresso por módulo</h3>
+      <div class="module-progress-list" id="module-progress-list"></div>
+    </div>
+
+  </div>
+
+  <!-- ===== TAB: ADMIN ===== -->
+  <div class="tab-content" id="tab-admin">
+
+    <div class="admin-header">
+      <div>
+        <h2>Painel do Coordenador</h2>
+        <p>Acompanhe o progresso de todos os médicos cadastrados</p>
+      </div>
+    </div>
+
+    <div class="admin-metrics">
+      <div class="admin-metric">
+        <div class="num blue">12</div>
+        <div class="label">Médicos cadastrados</div>
+      </div>
+      <div class="admin-metric">
+        <div class="num green">8</div>
+        <div class="label">Médicos ativos</div>
+      </div>
+      <div class="admin-metric">
+        <div class="num amber">9</div>
+        <div class="label">Certificados emitidos</div>
+      </div>
+      <div class="admin-metric">
+        <div class="num red">4</div>
+        <div class="label">Não iniciaram</div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card-header">
+        <h3>👨‍⚕️ Médicos cadastrados</h3>
+        <div class="table-search">
+          🔍 <input type="text" placeholder="Buscar médico..." oninput="filterTable(this.value)" />
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Médico</th>
+            <th>CRM</th>
+            <th>Módulo atual</th>
+            <th>Progresso</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="admin-table-body"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ===== MODAL CERTIFICADO ===== -->
+<div class="modal-overlay" id="cert-modal">
+  <div class="modal">
+    <div class="modal-icon">🏆</div>
+    <h2>Certificado disponível!</h2>
+    <p>Parabéns! Você concluiu o módulo <strong id="modal-module-name">Sedoanalgesia</strong>.<br>Seu certificado está pronto para download.</p>
+    <div class="modal-actions">
+      <button class="btn-modal-primary" onclick="downloadCert()">⬇ Baixar PDF</button>
+      <button class="btn-modal-secondary" onclick="closeModal()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== DATA ====================
+
+const users = {
+  'medico@hospital.com.br':  { nome: 'Dr. Carlos Mendes',  role: 'medico', crm: 'CRM/MG 45.231', progressKey: 'carlos' },
+  'maria@hospital.com.br':   { nome: 'Dra. Ana Paula Lima', role: 'medico', crm: 'CRM/MG 52.801', progressKey: 'ana' },
+  'admin@hospital.com.br':   { nome: 'Coord. Rodrigo Cunha', role: 'admin',  crm: 'CRM/MG 38.910', progressKey: 'admin' },
+};
+
+const modulos = [
+  { id: 'sedo',    nome: 'Sedoanalgesia',         icone: '💊', aulas: 5 },
+  { id: 'vm',      nome: 'Ventilação Mecânica',   icone: '🫁', aulas: 7 },
+  { id: 'sepse',   nome: 'Sepse e Choque',         icone: '🔬', aulas: 6 },
+  { id: 'pocus',   nome: 'POCUS Essencial',        icone: '🔊', aulas: 5 },
+  { id: 'nutri',   nome: 'Nutrição em UTI',        icone: '🥗', aulas: 4 },
+  { id: 'lra',     nome: 'Lesão Renal Aguda',      icone: '🫘', aulas: 5 },
+];
+
+const aulasData = {
+  sedo: [
+    { id: 's1', titulo: 'Princípios da Sedoanalgesia em UTI',   duracao: '28 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 's2', titulo: 'Escala RASS e avaliação de sedação',   duracao: '22 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 's3', titulo: 'Protocolos de analgesia multimodal',   duracao: '35 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 's4', titulo: 'Delirium em UTI: diagnóstico e manejo',duracao: '40 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 's5', titulo: 'Desmame da sedação — caso clínico',    duracao: '18 min', ytId: 'dQw4w9WgXcQ' },
+  ],
+  vm: [
+    { id: 'v1', titulo: 'Fisiologia da ventilação mecânica',    duracao: '32 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'v2', titulo: 'Modalidades ventilatórias',             duracao: '38 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'v3', titulo: 'Estratégia protetora de pulmão',        duracao: '45 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'v4', titulo: 'PEEP e recrutamento alveolar',          duracao: '30 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'v5', titulo: 'Desmame e extubação',                   duracao: '28 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'v6', titulo: 'Ventilação na SDRA',                    duracao: '42 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'v7', titulo: 'Casos clínicos comentados',             duracao: '25 min', ytId: 'dQw4w9WgXcQ' },
+  ],
+  sepse: [
+    { id: 'sp1', titulo: 'Definição e fisiopatologia da sepse',  duracao: '30 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'sp2', titulo: 'Sepse 3: critérios diagnósticos',      duracao: '22 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'sp3', titulo: 'Bundle de sepse — 1h e 3h',            duracao: '35 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'sp4', titulo: 'Choque séptico e vasopressores',        duracao: '40 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'sp5', titulo: 'Antibioticoterapia empirica em UTI',   duracao: '38 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'sp6', titulo: 'Controle do foco e casos clínicos',    duracao: '28 min', ytId: 'dQw4w9WgXcQ' },
+  ],
+  pocus: [
+    { id: 'p1', titulo: 'Introdução ao POCUS — bases físicas',  duracao: '25 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'p2', titulo: 'Avaliação pulmonar pelo POCUS',         duracao: '35 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'p3', titulo: 'POCUS cardíaco básico',                 duracao: '40 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'p4', titulo: 'POCUS abdominal em emergências',        duracao: '30 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'p5', titulo: 'Protocolo RUSH — prático',             duracao: '28 min', ytId: 'dQw4w9WgXcQ' },
+  ],
+  nutri: [
+    { id: 'n1', titulo: 'Avaliação nutricional em UTI',          duracao: '28 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'n2', titulo: 'Nutrição enteral precoce',              duracao: '32 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'n3', titulo: 'Nutrição parenteral — indicações',      duracao: '25 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'n4', titulo: 'Síndrome de realimentação',             duracao: '20 min', ytId: 'dQw4w9WgXcQ' },
+  ],
+  lra: [
+    { id: 'l1', titulo: 'Fisiopatologia da LRA',                 duracao: '30 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'l2', titulo: 'Critérios KDIGO e estadiamento',        duracao: '25 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'l3', titulo: 'LRA pré-renal, renal e pós-renal',      duracao: '28 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'l4', titulo: 'Terapia renal substitutiva em UTI',     duracao: '42 min', ytId: 'dQw4w9WgXcQ' },
+    { id: 'l5', titulo: 'Prevenção da nefrotoxicidade',         duracao: '22 min', ytId: 'dQw4w9WgXcQ' },
+  ],
+};
+
+// Progress per user
+const progressData = {
+  carlos: {
+    sedo:  { pct: 100, concluido: true,  cert: true,  aulas: { s1:true, s2:true, s3:true, s4:true, s5:true } },
+    vm:    { pct: 71,  concluido: false, cert: false, aulas: { v1:true, v2:true, v3:true, v4:true, v5:true } },
+    sepse: { pct: 100, concluido: true,  cert: true,  aulas: { sp1:true, sp2:true, sp3:true, sp4:true, sp5:true, sp6:true } },
+    pocus: { pct: 40,  concluido: false, cert: false, aulas: { p1:true, p2:true } },
+    nutri: { pct: 0,   concluido: false, cert: false, aulas: {} },
+    lra:   { pct: 0,   concluido: false, cert: false, aulas: {} },
+  },
+  ana: {
+    sedo:  { pct: 60,  concluido: false, cert: false, aulas: { s1:true, s2:true, s3:true } },
+    vm:    { pct: 0,   concluido: false, cert: false, aulas: {} },
+    sepse: { pct: 100, concluido: true,  cert: true,  aulas: { sp1:true, sp2:true, sp3:true, sp4:true, sp5:true, sp6:true } },
+    pocus: { pct: 0,   concluido: false, cert: false, aulas: {} },
+    nutri: { pct: 50,  concluido: false, cert: false, aulas: { n1:true, n2:true } },
+    lra:   { pct: 0,   concluido: false, cert: false, aulas: {} },
+  },
+  admin: {
+    sedo:  { pct: 100, concluido: true,  cert: true,  aulas: { s1:true, s2:true, s3:true, s4:true, s5:true } },
+    vm:    { pct: 100, concluido: true,  cert: true,  aulas: { v1:true, v2:true, v3:true, v4:true, v5:true, v6:true, v7:true } },
+    sepse: { pct: 100, concluido: true,  cert: true,  aulas: { sp1:true, sp2:true, sp3:true, sp4:true, sp5:true, sp6:true } },
+    pocus: { pct: 80,  concluido: false, cert: false, aulas: { p1:true, p2:true, p3:true, p4:true } },
+    nutri: { pct: 75,  concluido: false, cert: false, aulas: { n1:true, n2:true, n3:true } },
+    lra:   { pct: 60,  concluido: false, cert: false, aulas: { l1:true, l2:true, l3:true } },
+  },
+};
+
+const adminMedicos = [
+  { nome: 'Dr. Carlos Mendes',       crm: 'CRM/MG 45.231', modulo: 'Ventilação Mecânica',  pct: 38, status: 'andamento' },
+  { nome: 'Dra. Ana Paula Lima',     crm: 'CRM/MG 52.801', modulo: 'Sepse e Choque',        pct: 42, status: 'andamento' },
+  { nome: 'Dr. Ricardo Alves',       crm: 'CRM/MG 61.442', modulo: 'Sedoanalgesia',         pct: 100, status: 'concluido' },
+  { nome: 'Dra. Fernanda Gomes',     crm: 'CRM/MG 48.003', modulo: 'POCUS Essencial',       pct: 60, status: 'andamento' },
+  { nome: 'Dr. Thiago Rodrigues',    crm: 'CRM/MG 39.771', modulo: '—',                     pct: 0,  status: 'nao-iniciou' },
+  { nome: 'Dra. Juliana Martins',    crm: 'CRM/MG 57.220', modulo: 'Ventilação Mecânica',   pct: 85, status: 'andamento' },
+  { nome: 'Dr. Paulo Henrique',      crm: 'CRM/MG 44.558', modulo: 'Lesão Renal Aguda',     pct: 100, status: 'concluido' },
+  { nome: 'Dra. Mariana Costa',      crm: 'CRM/MG 63.114', modulo: '—',                     pct: 0,  status: 'nao-iniciou' },
+  { nome: 'Dr. Leonardo Souza',      crm: 'CRM/MG 41.872', modulo: 'Nutrição em UTI',       pct: 75, status: 'andamento' },
+  { nome: 'Dra. Patrícia Oliveira',  crm: 'CRM/MG 55.990', modulo: 'Sepse e Choque',        pct: 100, status: 'concluido' },
+  { nome: 'Dr. Gustavo Pereira',     crm: 'CRM/MG 49.332', modulo: '—',                     pct: 0,  status: 'nao-iniciou' },
+  { nome: 'Dra. Camila Ferreira',    crm: 'CRM/MG 60.001', modulo: 'POCUS Essencial',       pct: 20, status: 'andamento' },
+];
+
+// ==================== STATE ====================
+let currentUser = null;
+let currentModulo = null;
+let currentAula = null;
+
+// ==================== AUTH ====================
+function fillDemo(email, pass) {
+  document.getElementById('email-input').value = email;
+  document.getElementById('password-input').value = pass;
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('email-input').value.trim().toLowerCase();
+  const pass  = document.getElementById('password-input').value;
+  const btn   = document.getElementById('btn-login');
+  const errEl = document.getElementById('login-error');
+
+  btn.innerHTML = '<span class="loading"></span> Entrando...';
+  btn.disabled = true;
+  errEl.style.display = 'none';
+
+  setTimeout(() => {
+    const user = users[email];
+    if (!user || pass !== '123456') {
+      errEl.style.display = 'block';
+      btn.innerHTML = 'Entrar na plataforma';
+      btn.disabled = false;
+      return;
+    }
+    currentUser = { email, ...user };
+    loadApp();
+  }, 800);
+}
+
+function handleLogout() {
+  currentUser = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('email-input').value = '';
+  document.getElementById('password-input').value = '';
+  document.getElementById('btn-login').innerHTML = 'Entrar na plataforma';
+  document.getElementById('btn-login').disabled = false;
+  switchTab('aulas');
+}
+
+// ==================== APP INIT ====================
+function loadApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('app').style.flexDirection = 'column';
+
+  // User info in nav
+  document.getElementById('nav-user-name').textContent = currentUser.nome;
+  document.getElementById('user-avatar-initials').textContent = getInitials(currentUser.nome);
+
+  // Show admin tab if admin
+  const adminTabs = document.querySelectorAll('.admin-only-tab');
+  adminTabs.forEach(t => t.style.display = currentUser.role === 'admin' ? 'flex' : 'none');
+
+  // Render sidebar modules
+  renderModuleList();
+
+  // Render progresso
+  renderProgress();
+
+  // Render admin table
+  renderAdminTable(adminMedicos);
+
+  // Select first module
+  selectModule('sedo');
+}
+
+function getInitials(name) {
+  return name.replace(/^(Dr\.|Dra\.|Coord\.)\s/i, '').split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
+}
+
+// ==================== TABS ====================
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.topnav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tabName).classList.add('active');
+  document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+}
+
+// ==================== SIDEBAR & MODULES ====================
+function getModuleStatus(modId) {
+  const p = progressData[currentUser.progressKey][modId];
+  if (p.concluido) return 'concluido';
+  if (p.pct > 0) return 'andamento';
+  return 'nao-iniciado';
+}
+
+function renderModuleList() {
+  const list = document.getElementById('module-list');
+  list.innerHTML = '';
+
+  const pKey = currentUser.progressKey;
+  let totalAulas = 0, completedAulas = 0;
+
+  modulos.forEach(m => {
+    const status = getModuleStatus(m.id);
+    const prog   = progressData[pKey][m.id];
+    const aulas  = aulasData[m.id];
+
+    totalAulas += aulas.length;
+    completedAulas += Object.keys(prog.aulas).length;
+
+    const statusLabel = { concluido: 'Concluído', andamento: 'Em andamento', 'nao-iniciado': 'Não iniciado' }[status];
+
+    const div = document.createElement('div');
+    div.className = `module-item ${currentModulo === m.id ? 'active' : ''}`;
+    div.id = `mod-${m.id}`;
+    div.onclick = () => selectModule(m.id);
+    div.innerHTML = `
+      <div class="module-status-dot ${status}"></div>
+      <div class="module-info">
+        <div class="module-name">${m.icone} ${m.nome}</div>
+        <div class="module-meta">${aulas.length} aulas • ${prog.pct}% concluído</div>
+      </div>
+      <span class="module-badge ${status}">${statusLabel}</span>
+    `;
+    list.appendChild(div);
+  });
+
+  const pct = Math.round((completedAulas / totalAulas) * 100);
+  document.getElementById('overall-progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-text').textContent = `${completedAulas} de ${totalAulas} aulas`;
+}
+
+function selectModule(modId) {
+  currentModulo = modId;
+  currentAula   = null;
+
+  // Update sidebar
+  document.querySelectorAll('.module-item').forEach(el => el.classList.remove('active'));
+  const modEl = document.getElementById('mod-' + modId);
+  if (modEl) modEl.classList.add('active');
+
+  // Update video
+  document.getElementById('youtube-iframe').style.display = 'none';
+  document.getElementById('video-placeholder').style.display = 'flex';
+  document.getElementById('video-placeholder-title').textContent = 'Selecione uma aula';
+  document.getElementById('video-placeholder').querySelector('p').textContent = 'Clique em uma aula abaixo para começar';
+
+  // Render lessons
+  const mod = modulos.find(m => m.id === modId);
+  document.getElementById('current-module-title').innerHTML = `${mod.icone} ${mod.nome}`;
+  renderLessonList(modId);
+}
+
+function renderLessonList(modId) {
+  const aulas  = aulasData[modId];
+  const pKey   = currentUser.progressKey;
+  const prog   = progressData[pKey][modId];
+  const list   = document.getElementById('lesson-list');
+  list.innerHTML = '';
+
+  aulas.forEach((aula, i) => {
+    const concluida = !!prog.aulas[aula.id];
+    const playing   = currentAula === aula.id;
+    const status    = playing ? 'andamento' : (concluida ? 'concluida' : 'pendente');
+    const statusLabel = { andamento: '▶ Assistindo', concluida: '✓ Concluída', pendente: '○ Não iniciada' }[status];
+
+    const div = document.createElement('div');
+    div.className = `lesson-card ${status === 'andamento' ? 'playing' : ''} ${concluida && !playing ? 'concluida' : ''}`;
+    div.id = `lesson-${aula.id}`;
+    div.onclick = () => playLesson(modId, aula, i);
+    div.innerHTML = `
+      <div class="lesson-number">${concluida && !playing ? '✓' : i + 1}</div>
+      <div class="lesson-info">
+        <div class="lesson-title">${aula.titulo}</div>
+        <div class="lesson-meta">⏱ ${aula.duracao}</div>
+      </div>
+      <div class="lesson-status ${status}">${statusLabel}</div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function playLesson(modId, aula, idx) {
+  currentAula = aula.id;
+
+  // Show iframe
+  document.getElementById('video-placeholder').style.display = 'none';
+  const iframe = document.getElementById('youtube-iframe');
+  iframe.style.display = 'block';
+  iframe.src = `https://www.youtube.com/embed/${aula.ytId}?autoplay=1&rel=0`;
+
+  // Mark as watched (simulate progress)
+  const pKey = currentUser.progressKey;
+  progressData[pKey][modId].aulas[aula.id] = true;
+  const aulas = aulasData[modId];
+  const done  = Object.keys(progressData[pKey][modId].aulas).length;
+  const pct   = Math.round((done / aulas.length) * 100);
+  progressData[pKey][modId].pct = pct;
+
+  if (pct === 100 && !progressData[pKey][modId].concluido) {
+    progressData[pKey][modId].concluido = true;
+    progressData[pKey][modId].cert = true;
+    const mod = modulos.find(m => m.id === modId);
+    document.getElementById('modal-module-name').textContent = mod.nome;
+    setTimeout(() => document.getElementById('cert-modal').classList.add('show'), 800);
+  }
+
+  renderLessonList(modId);
+  renderModuleList();
+  showToast('▶ Reproduzindo: ' + aula.titulo);
+}
+
+// ==================== PROGRESSO ====================
+function renderProgress() {
+  const pKey = currentUser.progressKey;
+
+  // Metrics
+  let totalAulas = 0, certCount = 0, horas = 0;
+  modulos.forEach(m => {
+    const p = progressData[pKey][m.id];
+    totalAulas += Object.keys(p.aulas).length;
+    if (p.cert) certCount++;
+  });
+  horas = (totalAulas * 0.55).toFixed(1).replace('.', ',');
+  document.getElementById('metric-aulas').textContent = totalAulas;
+  document.getElementById('metric-horas').textContent = horas + 'h';
+  document.getElementById('metric-certs').textContent = certCount;
+
+  // Certificates
+  const certList = document.getElementById('cert-list');
+  certList.innerHTML = '';
+  const dates = ['15/01/2025', '28/02/2025', '10/03/2025'];
+  let dateIdx = 0;
+  modulos.forEach(m => {
+    const p = progressData[pKey][m.id];
+    if (p.cert) {
+      const div = document.createElement('div');
+      div.className = 'cert-item';
+      div.innerHTML = `
+        <div class="cert-icon">🏆</div>
+        <div class="cert-info">
+          <div class="cert-name">Certificado — ${m.nome}</div>
+          <div class="cert-date">Concluído em ${dates[dateIdx++ % dates.length]}</div>
+        </div>
+        <button class="btn-download" onclick="downloadCertModule('${m.nome}')">⬇ PDF</button>
+      `;
+      certList.appendChild(div);
+    }
+  });
+  if (certList.children.length === 0) {
+    certList.innerHTML = '<p style="color:var(--gray-400);font-size:13px;text-align:center;padding:20px">Nenhum certificado ainda. Conclua um módulo completo para receber seu certificado.</p>';
+  }
+
+  // Module progress
+  const modProgList = document.getElementById('module-progress-list');
+  modProgList.innerHTML = '';
+  modulos.forEach(m => {
+    const p = progressData[pKey][m.id];
+    const statusLabel = p.concluido ? '🟢 Concluído' : p.pct > 0 ? '🟡 Em andamento' : '⚪ Não iniciado';
+    const div = document.createElement('div');
+    div.className = 'module-progress-item';
+    div.innerHTML = `
+      <div class="module-progress-header">
+        <div class="module-progress-name">${m.icone} ${m.nome} <span style="font-size:11px;color:var(--gray-400);font-weight:400">${statusLabel}</span></div>
+        <div class="module-progress-pct">${p.pct}%</div>
+      </div>
+      <div class="progress-bar-wrap" style="height:10px">
+        <div class="progress-bar" style="width:${p.pct}%"></div>
+      </div>
+      <div style="font-size:11px;color:var(--gray-400);margin-top:6px">${Object.keys(p.aulas).length} de ${aulasData[m.id].length} aulas concluídas</div>
+    `;
+    modProgList.appendChild(div);
+  });
+}
+
+// ==================== ADMIN ====================
+function renderAdminTable(data) {
+  const tbody = document.getElementById('admin-table-body');
+  tbody.innerHTML = '';
+  data.forEach(med => {
+    const statusLabel = { concluido: 'Concluído', andamento: 'Em andamento', 'nao-iniciou': 'Não iniciou' }[med.status];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="td-name">${med.nome}</td>
+      <td>${med.crm}</td>
+      <td>${med.modulo}</td>
+      <td>
+        <div class="td-progress">
+          <div class="progress-bar-wrap"><div class="progress-bar" style="width:${med.pct}%"></div></div>
+          <span>${med.pct}%</span>
+        </div>
+      </td>
+      <td><span class="status-pill ${med.status}">${statusLabel}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function filterTable(query) {
+  const q = query.toLowerCase();
+  const filtered = adminMedicos.filter(m =>
+    m.nome.toLowerCase().includes(q) ||
+    m.crm.toLowerCase().includes(q) ||
+    m.modulo.toLowerCase().includes(q)
+  );
+  renderAdminTable(filtered);
+}
+
+// ==================== MODAL & TOAST ====================
+function closeModal() {
+  document.getElementById('cert-modal').classList.remove('show');
+}
+
+function downloadCert() {
+  closeModal();
+  showToast('✅ Certificado baixado com sucesso!', 'success');
+}
+
+function downloadCertModule(name) {
+  showToast(`✅ Certificado "${name}" baixado!`, 'success');
+}
+
+let toastTimer;
+function showToast(msg, type = '') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// Close modal on overlay click
+document.getElementById('cert-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
