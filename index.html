@@ -301,6 +301,19 @@
     .video-placeholder h3 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
     .video-placeholder p { font-size: 13px; opacity: 0.5; }
 
+    .complete-bar {
+      display: none; padding: 12px 20px; background: #111;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .btn-complete {
+      width: 100%; padding: 12px; border: none; border-radius: var(--radius);
+      background: var(--success); color: white; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn-complete:hover { background: #15803d; }
+    .btn-complete:disabled { background: var(--gray-400); cursor: default; }
+    .btn-complete.done { background: var(--gray-500); cursor: default; }
+
     .lesson-list-section { padding: 20px; }
     .section-title {
       font-size: 16px; font-weight: 700; color: var(--gray-800);
@@ -658,6 +671,11 @@
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen></iframe>
         </div>
+      </div>
+      <div class="complete-bar" id="complete-bar">
+        <button class="btn-complete" id="btn-complete" onclick="window.markLessonComplete()">
+          ✅ Marcar aula como concluída
+        </button>
       </div>
       <div class="lesson-list-section">
         <div class="section-title" id="current-module-title">📋 Selecione um módulo</div>
@@ -1187,10 +1205,16 @@ function renderLessonList(modId) {
 // ═══════════════════════════════════════════════════════════
 // PLAYER
 // ═══════════════════════════════════════════════════════════
-async function playLesson(modId, aula, idx) {
-  currentAula = aula.id;
+// Guarda referência da aula em reprodução para o botão de conclusão
+let currentPlayingModId = null;
+let currentPlayingAula  = null;
 
-  // Mostra iframe (ou placeholder se não tiver ytId)
+function playLesson(modId, aula, idx) {
+  currentAula          = aula.id;
+  currentPlayingModId  = modId;
+  currentPlayingAula   = aula;
+
+  // Mostra iframe
   const iframe = document.getElementById('youtube-iframe');
   if (aula.ytId) {
     document.getElementById('video-placeholder').style.display = 'none';
@@ -1200,31 +1224,60 @@ async function playLesson(modId, aula, idx) {
     iframe.style.display = 'none';
     document.getElementById('video-placeholder').style.display = 'flex';
     document.getElementById('video-placeholder-title').textContent = aula.titulo;
-    document.getElementById('video-placeholder').querySelector('p').textContent = 'Vídeo em breve — aula registrada como concluída';
+    document.getElementById('video-placeholder').querySelector('p').textContent = 'Vídeo em breve';
   }
 
-  // Marca aula como assistida (apenas se ainda não foi marcada)
+  // Mostra barra de conclusão
   const jaAssistida = !!userProgress[modId].aulas[aula.id];
-  if (!jaAssistida) {
-    userProgress[modId].aulas[aula.id] = true;
-    try {
-      const novoConcluido = await saveLessonProgress(currentUser.uid, modId, aula.id);
-      if (novoConcluido) {
-        const mod = modulos.find(m => m.id === modId);
-        certModuleName = mod.nome;
-        document.getElementById('modal-module-name').textContent = mod.nome;
-        setTimeout(() => document.getElementById('cert-modal').classList.add('show'), 800);
-      }
-    } catch (err) {
-      console.error('Erro ao salvar progresso:', err);
-      showToast('Erro ao salvar progresso. Verifique as regras do Firestore.', 'error');
-    }
+  const bar = document.getElementById('complete-bar');
+  const btn = document.getElementById('btn-complete');
+  bar.style.display = 'block';
+  if (jaAssistida) {
+    btn.textContent  = '✓ Aula já concluída';
+    btn.className    = 'btn-complete done';
+    btn.disabled     = true;
+  } else {
+    btn.textContent  = '✅ Marcar aula como concluída';
+    btn.className    = 'btn-complete';
+    btn.disabled     = false;
   }
 
   renderLessonList(modId);
   renderModuleList();
   renderProgress();
   showToast('▶ ' + aula.titulo);
+}
+
+window.markLessonComplete = async function() {
+  if (!currentPlayingModId || !currentPlayingAula) return;
+  const modId = currentPlayingModId;
+  const aula  = currentPlayingAula;
+
+  const btn = document.getElementById('btn-complete');
+  btn.disabled    = true;
+  btn.textContent = '⏳ Salvando...';
+
+  userProgress[modId].aulas[aula.id] = true;
+  try {
+    const novoConcluido = await saveLessonProgress(currentUser.uid, modId, aula.id);
+    btn.textContent = '✓ Aula concluída!';
+    btn.className   = 'btn-complete done';
+    if (novoConcluido) {
+      const mod = modulos.find(m => m.id === modId);
+      certModuleName = mod.nome;
+      document.getElementById('modal-module-name').textContent = mod.nome;
+      setTimeout(() => document.getElementById('cert-modal').classList.add('show'), 800);
+    }
+  } catch (err) {
+    console.error('Erro ao salvar progresso:', err);
+    showToast('Erro ao salvar progresso. Verifique as regras do Firestore.', 'error');
+    btn.disabled    = false;
+    btn.textContent = '✅ Marcar aula como concluída';
+  }
+
+  renderLessonList(modId);
+  renderModuleList();
+  renderProgress();
 }
 
 // ═══════════════════════════════════════════════════════════
