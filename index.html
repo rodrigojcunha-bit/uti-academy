@@ -854,9 +854,10 @@ const authSec     = getAuth(appSec);
 //   { id: 'id-unico', nome: 'Nome do Módulo', icone: '🔥', aulas: N }
 // ═══════════════════════════════════════════════════════════
 const modulos = [
-  { id: 'hemorragia', nome: 'Hemorragia Digestiva Alta', icone: '🩸', aulas: 1 },
-  { id: 'nutricao',   nome: 'Nutrição em UTI',            icone: '🥗', aulas: 1 },
-  { id: 'cetoacidose',nome: 'Cetoacidose Diabética',      icone: '🩺', aulas: 1 },
+  { id: 'hemorragia',  nome: 'Hemorragia Digestiva Alta', icone: '🩸', aulas: 1 },
+  { id: 'nutricao',    nome: 'Nutrição em UTI',            icone: '🥗', aulas: 1 },
+  { id: 'cetoacidose', nome: 'Cetoacidose Diabética',      icone: '🩺', aulas: 1 },
+  { id: 'marcapasso',  nome: 'Marcapasso Transvenoso',     icone: '⚡', aulas: 1 },
   // Adicione novos módulos abaixo:
 ];
 
@@ -869,6 +870,9 @@ const aulasData = {
   ],
   cetoacidose: [
     { id: 'c1', titulo: 'Protocolo de Cetoacidose', duracao: '', ytId: '0D82osYB4h4' },
+  ],
+  marcapasso: [
+    { id: 'mp1', titulo: 'Marcapasso Transvenoso', duracao: '', ytId: 't0bB0MiphcE' },
     // Adicione novas aulas deste módulo aqui
   ],
   // Adicione dados de aulas dos novos módulos aqui
