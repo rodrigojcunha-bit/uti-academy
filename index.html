@@ -1134,11 +1134,27 @@ function switchTabFn(tabName) {
 // ═══════════════════════════════════════════════════════════
 // SIDEBAR E MÓDULOS
 // ═══════════════════════════════════════════════════════════
+
+// Retorna pct de uma aula: true=100, número=pct, ausente=0
+function getAulaPct(modId, aulaId) {
+  const val = ((userProgress[modId] || {}).aulas || {})[aulaId];
+  if (val === true) return 100;
+  if (typeof val === 'number') return val;
+  return 0;
+}
+// Média dos percentuais das aulas de um módulo (considera progresso ao vivo)
+function getModuleLivePct(modId) {
+  const aulas = aulasData[modId] || [];
+  if (!aulas.length) return 0;
+  return Math.round(aulas.reduce((s, a) => s + getAulaPct(modId, a.id), 0) / aulas.length);
+}
+
 function getModuleStatus(modId) {
-  const p = userProgress[modId];
+  const p    = userProgress[modId];
+  const live = getModuleLivePct(modId);
   if (!p) return 'nao-iniciado';
   if (p.concluido) return 'concluido';
-  if (p.pct > 0)   return 'andamento';
+  if (live > 0)    return 'andamento';
   return 'nao-iniciado';
 }
 
@@ -1146,16 +1162,19 @@ function renderModuleList() {
   const list = document.getElementById('module-list');
   list.innerHTML = '';
 
-  let totalAulas = 0, completedAulas = 0;
+  let totalAulas = 0, completedAulas = 0, totalPctSum = 0;
 
   modulos.forEach(m => {
-    const status      = getModuleStatus(m.id);
-    const prog        = userProgress[m.id] || { pct: 0, aulas: {} };
     const aulas       = aulasData[m.id];
-    const doneCount   = Object.keys(prog.aulas).length;
+    const prog        = userProgress[m.id] || { pct: 0, concluido: false, aulas: {} };
+    const livePct     = getModuleLivePct(m.id);
+    const status      = getModuleStatus(m.id);
+    // "Concluídas" = apenas as marcadas com true no Firestore
+    const doneCount   = aulas.filter(a => prog.aulas[a.id] === true).length;
 
     totalAulas     += aulas.length;
     completedAulas += doneCount;
+    totalPctSum    += aulas.reduce((s, a) => s + getAulaPct(m.id, a.id), 0);
 
     const statusLabel = { concluido: 'Concluído', andamento: 'Em andamento', 'nao-iniciado': 'Não iniciado' }[status];
 
@@ -1167,17 +1186,17 @@ function renderModuleList() {
       <div class="module-status-dot ${status}"></div>
       <div class="module-info">
         <div class="module-name">${m.icone} ${m.nome}</div>
-        <div class="module-meta">${aulas.length} aulas • ${prog.pct}% concluído</div>
+        <div class="module-meta">${aulas.length} ${aulas.length === 1 ? 'aula' : 'aulas'} • ${livePct}% concluído</div>
       </div>
       <span class="module-badge ${status}">${statusLabel}</span>
     `;
     list.appendChild(div);
   });
 
-  const pct = totalAulas > 0 ? Math.round((completedAulas / totalAulas) * 100) : 0;
-  document.getElementById('overall-progress-bar').style.width = pct + '%';
-  document.getElementById('progress-pct').textContent  = pct + '%';
-  document.getElementById('progress-text').textContent = `${completedAulas} de ${totalAulas} aulas`;
+  const overallPct = totalAulas > 0 ? Math.round(totalPctSum / totalAulas) : 0;
+  document.getElementById('overall-progress-bar').style.width = overallPct + '%';
+  document.getElementById('progress-pct').textContent  = overallPct + '%';
+  document.getElementById('progress-text').textContent = `${completedAulas} de ${totalAulas} aulas concluídas`;
 }
 
 function selectModule(modId) {
@@ -1213,13 +1232,21 @@ function renderLessonList(modId) {
   list.innerHTML = '';
 
   aulas.forEach((aula, i) => {
-    const concluida  = !!prog.aulas[aula.id];
+    const val        = prog.aulas[aula.id];
+    const concluida  = val === true;
+    const parcial    = typeof val === 'number' && val > 0 && val < 100;
     const playing    = currentAula === aula.id;
-    const status     = playing ? 'andamento' : (concluida ? 'concluida' : 'pendente');
-    const statusLabel = { andamento: '▶ Assistindo', concluida: '✓ Concluída', pendente: '○ Não iniciada' }[status];
+    const status     = playing ? 'andamento' : (concluida ? 'concluida' : (parcial ? 'andamento' : 'pendente'));
+    const statusLabel = playing
+      ? '▶ Assistindo'
+      : concluida
+        ? '✓ Concluída'
+        : parcial
+          ? `▶ ${val}% assistido`
+          : '○ Não iniciada';
 
     const div = document.createElement('div');
-    div.className = `lesson-card ${status === 'andamento' ? 'playing' : ''} ${concluida && !playing ? 'concluida' : ''}`;
+    div.className = `lesson-card ${(playing || parcial) && !concluida ? 'playing' : ''} ${concluida && !playing ? 'concluida' : ''}`;
     div.id = `lesson-${aula.id}`;
     div.onclick = () => playLesson(modId, aula, i);
     div.innerHTML = `
@@ -1255,8 +1282,43 @@ function startProgressPolling(bar, fill, pctLabel, completeBar, btn) {
       const dur = window._ytPlayer.getDuration();
       if (!dur) return;
       const pct = Math.min(100, Math.round((cur / dur) * 100));
-      fill.style.width      = pct + '%';
-      pctLabel.textContent  = pct + '%';
+      fill.style.width     = pct + '%';
+      pctLabel.textContent = pct + '%';
+
+      // Atualiza progresso em memória (não salva no Firestore ainda)
+      if (currentPlayingModId && currentPlayingAula) {
+        if (!userProgress[currentPlayingModId]) userProgress[currentPlayingModId] = { aulas: {}, pct: 0 };
+        // Só atualiza se ainda não foi marcada como concluída
+        if (userProgress[currentPlayingModId].aulas[currentPlayingAula.id] !== true) {
+          userProgress[currentPlayingModId].aulas[currentPlayingAula.id] = pct;
+        }
+        // Atualiza texto do módulo na sidebar diretamente (sem re-render completo)
+        const modEl = document.getElementById(`mod-${currentPlayingModId}`);
+        if (modEl) {
+          const livePct = getModuleLivePct(currentPlayingModId);
+          const nAulas  = (aulasData[currentPlayingModId] || []).length;
+          const metaEl  = modEl.querySelector('.module-meta');
+          if (metaEl) metaEl.textContent = `${nAulas} ${nAulas === 1 ? 'aula' : 'aulas'} • ${livePct}% concluído`;
+          // Atualiza dot de status
+          const dot = modEl.querySelector('.module-status-dot');
+          if (dot && livePct > 0 && !dot.classList.contains('concluido')) {
+            dot.className = 'module-status-dot andamento';
+          }
+        }
+        // Atualiza barra geral no topo da sidebar
+        const totalAulas = modulos.reduce((s, m) => s + (aulasData[m.id] || []).length, 0);
+        const totalPct   = totalAulas > 0
+          ? Math.round(modulos.reduce((s, m) => s + (aulasData[m.id] || []).reduce((ss, a) => ss + getAulaPct(m.id, a.id), 0), 0) / totalAulas)
+          : 0;
+        const overallBar = document.getElementById('overall-progress-bar');
+        const pctEl      = document.getElementById('progress-pct');
+        if (overallBar) overallBar.style.width = totalPct + '%';
+        if (pctEl)      pctEl.textContent = totalPct + '%';
+        // Atualiza aba Meu Progresso se estiver visível
+        const tabProg = document.getElementById('tab-progresso');
+        if (tabProg && tabProg.classList.contains('active')) renderProgress();
+      }
+
       // Mostra botão a partir de 90%
       if (pct >= 90 && completeBar.style.display === 'none') {
         completeBar.style.display = 'block';
@@ -1298,7 +1360,7 @@ function playLesson(modId, aula, idx) {
   progWrap.style.display  = 'none';
   bar.style.display       = 'none';
 
-  const jaAssistida = !!userProgress[modId].aulas[aula.id];
+  const jaAssistida = userProgress[modId].aulas[aula.id] === true;
 
   if (aula.ytId) {
     placeholder.style.display = 'none';
@@ -1460,17 +1522,18 @@ function renderProgress() {
   modProgList.innerHTML = '';
   modulos.forEach(m => {
     const p       = userProgress[m.id] || { pct: 0, concluido: false, aulas: {} };
-    const done    = Object.keys(p.aulas).length;
-    const status  = p.concluido ? '🟢 Concluído' : p.pct > 0 ? '🟡 Em andamento' : '⚪ Não iniciado';
+    const livePct = getModuleLivePct(m.id);
+    const done    = (aulasData[m.id] || []).filter(a => p.aulas[a.id] === true).length;
+    const status  = p.concluido ? '🟢 Concluído' : livePct > 0 ? '🟡 Em andamento' : '⚪ Não iniciado';
     const div     = document.createElement('div');
     div.className = 'module-progress-item';
     div.innerHTML = `
       <div class="module-progress-header">
         <div class="module-progress-name">${m.icone} ${m.nome} <span style="font-size:11px;color:var(--gray-400);font-weight:400">${status}</span></div>
-        <div class="module-progress-pct">${p.pct}%</div>
+        <div class="module-progress-pct">${livePct}%</div>
       </div>
       <div class="progress-bar-wrap" style="height:10px">
-        <div class="progress-bar" style="width:${p.pct}%"></div>
+        <div class="progress-bar" style="width:${livePct}%"></div>
       </div>
       <div style="font-size:11px;color:var(--gray-400);margin-top:6px">${done} de ${aulasData[m.id].length} aulas concluídas</div>
     `;
