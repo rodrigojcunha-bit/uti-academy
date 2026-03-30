@@ -847,60 +847,23 @@ const authSec     = getAuth(appSec);
 // ═══════════════════════════════════════════════════════════
 // DADOS ESTÁTICOS (módulos e aulas)
 // ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// MÓDULOS E AULAS
+// Adicione novos módulos e aulas aqui à medida que forem
+// sendo subidos no YouTube. Formato:
+//   { id: 'id-unico', nome: 'Nome do Módulo', icone: '🔥', aulas: N }
+// ═══════════════════════════════════════════════════════════
 const modulos = [
-  { id: 'sedo',  nome: 'Sedoanalgesia',       icone: '💊', aulas: 5 },
-  { id: 'vm',    nome: 'Ventilação Mecânica',  icone: '🫁', aulas: 7 },
-  { id: 'sepse', nome: 'Sepse e Choque',        icone: '🔬', aulas: 6 },
-  { id: 'pocus', nome: 'POCUS Essencial',       icone: '🔊', aulas: 5 },
-  { id: 'nutri', nome: 'Nutrição em UTI',       icone: '🥗', aulas: 4 },
-  { id: 'lra',   nome: 'Lesão Renal Aguda',     icone: '🫘', aulas: 5 },
+  { id: 'hemorragia', nome: 'Hemorragia Digestiva Alta', icone: '🩸', aulas: 1 },
+  // Adicione novos módulos abaixo:
 ];
 
 const aulasData = {
-  sedo: [
-    { id: 's1', titulo: 'Princípios da Sedoanalgesia em UTI',    duracao: '28 min', ytId: '' },
-    { id: 's2', titulo: 'Escala RASS e avaliação de sedação',    duracao: '22 min', ytId: '' },
-    { id: 's3', titulo: 'Protocolos de analgesia multimodal',    duracao: '35 min', ytId: '' },
-    { id: 's4', titulo: 'Delirium em UTI: diagnóstico e manejo', duracao: '40 min', ytId: '' },
-    { id: 's5', titulo: 'Desmame da sedação — caso clínico',     duracao: '18 min', ytId: '' },
+  hemorragia: [
+    { id: 'h1', titulo: 'Protocolo de Hemorragia Digestiva Alta', duracao: '', ytId: '2lvjxedug9s' },
+    // Adicione novas aulas deste módulo aqui
   ],
-  vm: [
-    { id: 'v1', titulo: 'Fisiologia da ventilação mecânica',     duracao: '32 min', ytId: '' },
-    { id: 'v2', titulo: 'Modalidades ventilatórias',              duracao: '38 min', ytId: '' },
-    { id: 'v3', titulo: 'Estratégia protetora de pulmão',         duracao: '45 min', ytId: '' },
-    { id: 'v4', titulo: 'PEEP e recrutamento alveolar',           duracao: '30 min', ytId: '' },
-    { id: 'v5', titulo: 'Desmame e extubação',                    duracao: '28 min', ytId: '' },
-    { id: 'v6', titulo: 'Ventilação na SDRA',                     duracao: '42 min', ytId: '' },
-    { id: 'v7', titulo: 'Casos clínicos comentados',              duracao: '25 min', ytId: '' },
-  ],
-  sepse: [
-    { id: 'sp1', titulo: 'Definição e fisiopatologia da sepse',   duracao: '30 min', ytId: '' },
-    { id: 'sp2', titulo: 'Sepse 3: critérios diagnósticos',       duracao: '22 min', ytId: '' },
-    { id: 'sp3', titulo: 'Bundle de sepse — 1h e 3h',             duracao: '35 min', ytId: '' },
-    { id: 'sp4', titulo: 'Choque séptico e vasopressores',         duracao: '40 min', ytId: '' },
-    { id: 'sp5', titulo: 'Antibioticoterapia empírica em UTI',    duracao: '38 min', ytId: '' },
-    { id: 'sp6', titulo: 'Controle do foco e casos clínicos',     duracao: '28 min', ytId: '' },
-  ],
-  pocus: [
-    { id: 'p1', titulo: 'Introdução ao POCUS — bases físicas',   duracao: '25 min', ytId: '' },
-    { id: 'p2', titulo: 'Avaliação pulmonar pelo POCUS',          duracao: '35 min', ytId: '' },
-    { id: 'p3', titulo: 'POCUS cardíaco básico',                  duracao: '40 min', ytId: '' },
-    { id: 'p4', titulo: 'POCUS abdominal em emergências',         duracao: '30 min', ytId: '' },
-    { id: 'p5', titulo: 'Protocolo RUSH — prático',              duracao: '28 min', ytId: '' },
-  ],
-  nutri: [
-    { id: 'n1', titulo: 'Avaliação nutricional em UTI',           duracao: '28 min', ytId: '' },
-    { id: 'n2', titulo: 'Nutrição enteral precoce',               duracao: '32 min', ytId: '' },
-    { id: 'n3', titulo: 'Nutrição parenteral — indicações',       duracao: '25 min', ytId: '' },
-    { id: 'n4', titulo: 'Síndrome de realimentação',              duracao: '20 min', ytId: '' },
-  ],
-  lra: [
-    { id: 'l1', titulo: 'Fisiopatologia da LRA',                  duracao: '30 min', ytId: '' },
-    { id: 'l2', titulo: 'Critérios KDIGO e estadiamento',         duracao: '25 min', ytId: '' },
-    { id: 'l3', titulo: 'LRA pré-renal, renal e pós-renal',       duracao: '28 min', ytId: '' },
-    { id: 'l4', titulo: 'Terapia renal substitutiva em UTI',      duracao: '42 min', ytId: '' },
-    { id: 'l5', titulo: 'Prevenção da nefrotoxicidade',           duracao: '22 min', ytId: '' },
-  ],
+  // Adicione dados de aulas dos novos módulos aqui
 };
 
 // ═══════════════════════════════════════════════════════════
