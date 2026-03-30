@@ -1299,10 +1299,12 @@ function startProgressPolling(bar, fill, pctLabel, completeBar, btn) {
           const nAulas  = (aulasData[currentPlayingModId] || []).length;
           const metaEl  = modEl.querySelector('.module-meta');
           if (metaEl) metaEl.textContent = `${nAulas} ${nAulas === 1 ? 'aula' : 'aulas'} • ${livePct}% concluído`;
-          // Atualiza dot de status
-          const dot = modEl.querySelector('.module-status-dot');
-          if (dot && livePct > 0 && !dot.classList.contains('concluido')) {
-            dot.className = 'module-status-dot andamento';
+          // Atualiza dot e badge de status
+          const dot   = modEl.querySelector('.module-status-dot');
+          const badge = modEl.querySelector('.module-badge');
+          if (livePct > 0) {
+            if (dot   && !dot.classList.contains('concluido'))   dot.className   = 'module-status-dot andamento';
+            if (badge && !badge.classList.contains('concluido')) { badge.className = 'module-badge andamento'; badge.textContent = 'Em andamento'; }
           }
         }
         // Atualiza barra geral no topo da sidebar
