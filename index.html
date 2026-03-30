@@ -302,6 +302,22 @@
     .video-placeholder h3 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
     .video-placeholder p { font-size: 13px; opacity: 0.5; }
 
+    .video-progress-bar-wrap {
+      display: none; background: #1a1a1a; padding: 8px 20px 4px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .video-progress-label {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 5px;
+    }
+    .video-progress-track {
+      height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;
+    }
+    .video-progress-fill {
+      height: 100%; width: 0%; background: var(--accent); border-radius: 3px;
+      transition: width 0.8s linear;
+    }
+
     .complete-bar {
       display: none; padding: 12px 20px; background: #111;
       border-top: 1px solid rgba(255,255,255,0.07);
@@ -669,6 +685,15 @@
             <p>Escolha um módulo e uma aula na barra lateral</p>
           </div>
           <div id="yt-player-container" style="position:absolute;top:0;left:0;width:100%;height:100%;display:none;"></div>
+        </div>
+      </div>
+      <div class="video-progress-bar-wrap" id="video-progress-wrap">
+        <div class="video-progress-label">
+          <span>Progresso do vídeo</span>
+          <span id="video-progress-pct">0%</span>
+        </div>
+        <div class="video-progress-track">
+          <div class="video-progress-fill" id="video-progress-fill"></div>
         </div>
       </div>
       <div class="complete-bar" id="complete-bar">
@@ -1163,7 +1188,8 @@ function selectModule(modId) {
   const modEl = document.getElementById('mod-' + modId);
   if (modEl) modEl.classList.add('active');
 
-  // Destrói player do YouTube se existir
+  // Para polling e destrói player do YouTube se existir
+  stopProgressPolling();
   if (window._ytPlayer) {
     try { window._ytPlayer.destroy(); } catch(e) {}
     window._ytPlayer = null;
@@ -1218,22 +1244,59 @@ let currentPlayingAula  = null;
 // Callback global exigido pela YouTube IFrame API
 window.onYouTubeIframeAPIReady = function() { /* API pronta */ };
 
+// Polling de progresso do vídeo
+let _progressInterval = null;
+function startProgressPolling(bar, fill, pctLabel, completeBar, btn) {
+  stopProgressPolling();
+  _progressInterval = setInterval(() => {
+    if (!window._ytPlayer || typeof window._ytPlayer.getCurrentTime !== 'function') return;
+    try {
+      const cur = window._ytPlayer.getCurrentTime();
+      const dur = window._ytPlayer.getDuration();
+      if (!dur) return;
+      const pct = Math.min(100, Math.round((cur / dur) * 100));
+      fill.style.width      = pct + '%';
+      pctLabel.textContent  = pct + '%';
+      // Mostra botão a partir de 90%
+      if (pct >= 90 && completeBar.style.display === 'none') {
+        completeBar.style.display = 'block';
+        btn.textContent = '✅ Marcar aula como concluída';
+        btn.className   = 'btn-complete';
+        btn.disabled    = false;
+      }
+    } catch(e) {}
+  }, 1000);
+}
+function stopProgressPolling() {
+  if (_progressInterval) { clearInterval(_progressInterval); _progressInterval = null; }
+}
+
 function playLesson(modId, aula, idx) {
   currentAula          = aula.id;
   currentPlayingModId  = modId;
   currentPlayingAula   = aula;
 
-  const bar = document.getElementById('complete-bar');
-  const btn = document.getElementById('btn-complete');
+  const bar      = document.getElementById('complete-bar');
+  const btn      = document.getElementById('btn-complete');
+  const progWrap = document.getElementById('video-progress-wrap');
+  const progFill = document.getElementById('video-progress-fill');
+  const progPct  = document.getElementById('video-progress-pct');
   const placeholder = document.getElementById('video-placeholder');
   const container   = document.getElementById('yt-player-container');
 
-  // Destrói player anterior se existir
+  // Para polling anterior e destrói player
+  stopProgressPolling();
   if (window._ytPlayer) {
     try { window._ytPlayer.destroy(); } catch(e) {}
     window._ytPlayer = null;
   }
   container.innerHTML = '';
+
+  // Reseta barra de progresso
+  progFill.style.width    = '0%';
+  progPct.textContent     = '0%';
+  progWrap.style.display  = 'none';
+  bar.style.display       = 'none';
 
   const jaAssistida = !!userProgress[modId].aulas[aula.id];
 
@@ -1241,36 +1304,48 @@ function playLesson(modId, aula, idx) {
     placeholder.style.display = 'none';
     container.style.display   = 'block';
 
-    // Cria div alvo para o YT.Player
     const div = document.createElement('div');
     div.id = 'yt-player-div';
     container.appendChild(div);
 
     if (jaAssistida) {
-      // Já assistida: player normal sem detecção de fim
+      // Já assistida: player simples, barra cheia, botão desabilitado
       window._ytPlayer = new YT.Player('yt-player-div', {
         videoId: aula.ytId,
         width: '100%', height: '100%',
         playerVars: { autoplay: 1, rel: 0 },
       });
-      bar.style.display = 'block';
-      btn.textContent   = '✓ Aula já concluída';
-      btn.className     = 'btn-complete done';
-      btn.disabled      = true;
+      progFill.style.width   = '100%';
+      progPct.textContent    = '100%';
+      progWrap.style.display = 'block';
+      bar.style.display      = 'block';
+      btn.textContent        = '✓ Aula já concluída';
+      btn.className          = 'btn-complete done';
+      btn.disabled           = true;
     } else {
-      // Ainda não assistida: detecta fim do vídeo para liberar botão
-      bar.style.display = 'none';
+      // Não assistida: mostra barra de progresso, botão aparece aos 90%
+      progWrap.style.display = 'block';
       window._ytPlayer = new YT.Player('yt-player-div', {
         videoId: aula.ytId,
         width: '100%', height: '100%',
         playerVars: { autoplay: 1, rel: 0 },
         events: {
+          onReady: function() {
+            startProgressPolling(progWrap, progFill, progPct, bar, btn);
+          },
           onStateChange: function(event) {
-            if (event.data === YT.PlayerState.ENDED) {
-              bar.style.display = 'block';
-              btn.textContent   = '✅ Marcar aula como concluída';
-              btn.className     = 'btn-complete';
-              btn.disabled      = false;
+            if (event.data === YT.PlayerState.PLAYING) {
+              startProgressPolling(progWrap, progFill, progPct, bar, btn);
+            } else if (event.data === YT.PlayerState.PAUSED) {
+              stopProgressPolling();
+            } else if (event.data === YT.PlayerState.ENDED) {
+              stopProgressPolling();
+              progFill.style.width  = '100%';
+              progPct.textContent   = '100%';
+              bar.style.display     = 'block';
+              btn.textContent       = '✅ Marcar aula como concluída';
+              btn.className         = 'btn-complete';
+              btn.disabled          = false;
             }
           }
         }
