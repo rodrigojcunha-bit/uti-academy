@@ -1008,13 +1008,18 @@ async function loadUserProgress(uid) {
     }
   });
 
-  // Carrega aulas assistidas
+  // Carrega aulas assistidas (completas e parciais)
   const aulaSnap = await getDocs(collection(db, 'progresso', uid, 'aulas'));
   aulaSnap.forEach(d => {
     const aulaId = d.id;
+    const data   = d.data();
     for (const [modId, aulas] of Object.entries(aulasData)) {
       if (aulas.find(a => a.id === aulaId)) {
-        userProgress[modId].aulas[aulaId] = true;
+        if (data.assistido === true) {
+          userProgress[modId].aulas[aulaId] = true;
+        } else if (data.percentualAssistido > 0) {
+          userProgress[modId].aulas[aulaId] = data.percentualAssistido;
+        }
         break;
       }
     }
@@ -1054,6 +1059,19 @@ async function saveLessonProgress(uid, modId, aulaId) {
 
   return foiConcluido;
 }
+
+async function savePartialProgress(uid, modId, aulaId, pct) {
+  if (!uid || !aulaId || pct <= 0) return;
+  try {
+    await setDoc(doc(db, 'progresso', uid, 'aulas', aulaId), {
+      percentualAssistido: pct,
+      atualizadoEm: serverTimestamp(),
+    }, { merge: true });
+  } catch(e) {
+    console.warn('savePartialProgress falhou:', e);
+  }
+}
+
 
 // ═══════════════════════════════════════════════════════════
 // TELA DE LOGIN / APP
@@ -1273,6 +1291,23 @@ window.onYouTubeIframeAPIReady = function() { /* API pronta */ };
 
 // Polling de progresso do vídeo
 let _progressInterval = null;
+
+// Salva progresso ao ocultar aba ou fechar página
+function saveProgressOnLeave() {
+  if (!currentUser || !currentPlayingModId || !currentPlayingAula) return;
+  if (!window._ytPlayer || typeof window._ytPlayer.getCurrentTime !== 'function') return;
+  try {
+    const cur = window._ytPlayer.getCurrentTime();
+    const dur = window._ytPlayer.getDuration();
+    if (dur > 0) {
+      const pct = Math.min(99, Math.round((cur / dur) * 100));
+      if (pct > 0) savePartialProgress(currentUser.uid, currentPlayingModId, currentPlayingAula.id, pct);
+    }
+  } catch(e) {}
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) saveProgressOnLeave(); });
+window.addEventListener('beforeunload', saveProgressOnLeave);
+
 function startProgressPolling(bar, fill, pctLabel, completeBar, btn) {
   stopProgressPolling();
   _progressInterval = setInterval(() => {
@@ -1395,6 +1430,27 @@ function playLesson(modId, aula, idx) {
         playerVars: { autoplay: 1, rel: 0 },
         events: {
           onReady: function() {
+            // Restaura posição se há progresso parcial salvo
+            const savedPct = typeof userProgress[modId].aulas[aula.id] === 'number'
+              ? userProgress[modId].aulas[aula.id] : 0;
+            if (savedPct > 0 && savedPct < 100) {
+              try {
+                const dur = window._ytPlayer.getDuration();
+                if (dur > 0) {
+                  const seekTo = Math.round((savedPct / 100) * dur);
+                  window._ytPlayer.seekTo(seekTo, true);
+                }
+              } catch(e) {}
+              progFill.style.width    = savedPct + '%';
+              progPct.textContent     = savedPct + '%';
+              progWrap.style.display  = 'block';
+              if (savedPct >= 90) {
+                bar.style.display   = 'block';
+                btn.textContent     = '✅ Marcar aula como concluída';
+                btn.className       = 'btn-complete';
+                btn.disabled        = false;
+              }
+            }
             startProgressPolling(progWrap, progFill, progPct, bar, btn);
           },
           onStateChange: function(event) {
@@ -1402,6 +1458,17 @@ function playLesson(modId, aula, idx) {
               startProgressPolling(progWrap, progFill, progPct, bar, btn);
             } else if (event.data === YT.PlayerState.PAUSED) {
               stopProgressPolling();
+              // Salva progresso parcial ao pausar
+              if (currentUser && currentPlayingModId && currentPlayingAula) {
+                try {
+                  const cur = window._ytPlayer.getCurrentTime();
+                  const dur = window._ytPlayer.getDuration();
+                  if (dur > 0) {
+                    const pct = Math.min(99, Math.round((cur / dur) * 100));
+                    if (pct > 0) savePartialProgress(currentUser.uid, currentPlayingModId, currentPlayingAula.id, pct);
+                  }
+                } catch(e) {}
+              }
             } else if (event.data === YT.PlayerState.ENDED) {
               stopProgressPolling();
               progFill.style.width  = '100%';
