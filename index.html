@@ -1038,7 +1038,7 @@ async function saveLessonProgress(uid, modId, aulaId) {
 
   // Recalcula progresso do módulo
   const totalAulas    = aulasData[modId].length;
-  const doneAulas     = Object.keys(userProgress[modId].aulas).length;
+  const doneAulas     = Object.values(userProgress[modId].aulas).filter(v => v === true).length;
   const pct           = Math.round((doneAulas / totalAulas) * 100);
   const concluido     = pct === 100;
   const foiConcluido  = !userProgress[modId].concluido && concluido;
@@ -1542,14 +1542,23 @@ window.markLessonComplete = async function() {
 // PROGRESSO
 // ═══════════════════════════════════════════════════════════
 function renderProgress() {
-  let totalDone = 0, certCount = 0;
+  let totalDone = 0, certCount = 0, totalHoras = 0;
   modulos.forEach(m => {
     const p = userProgress[m.id] || { aulas: {}, cert: false };
-    totalDone += Object.keys(p.aulas).length;
+    // Conta apenas aulas REALMENTE concluídas (valor === true)
+    // Horas parciais contam proporcionalmente
+    Object.values(p.aulas).forEach(val => {
+      if (val === true) {
+        totalDone++;
+        totalHoras += 0.55;
+      } else if (typeof val === 'number' && val > 0) {
+        totalHoras += (val / 100) * 0.55;
+      }
+    });
     if (p.cert) certCount++;
   });
 
-  const horas = (totalDone * 0.55).toFixed(1).replace('.', ',');
+  const horas = totalHoras.toFixed(1).replace('.', ',');
   document.getElementById('metric-aulas').textContent = totalDone;
   document.getElementById('metric-horas').textContent = horas + 'h';
   document.getElementById('metric-certs').textContent = certCount;
