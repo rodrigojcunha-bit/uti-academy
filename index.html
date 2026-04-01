@@ -1635,17 +1635,38 @@ async function loadAdminPanel() {
       modulos.forEach(m => { totalAulas += aulasData[m.id].length; });
 
       try {
+        // Lê progresso por módulo (certificados e status de conclusão)
         const mSnap = await getDocs(collection(db, 'progresso', uid, 'modulos'));
+        const modPctMap = {};
         mSnap.forEach(mDoc => {
-          const mData  = mDoc.data();
-          const modId  = mDoc.id;
-          const mod    = modulos.find(x => x.id === modId);
-          if (!mod) return;
-          const done   = Math.round((mData.pct || 0) / 100 * aulasData[modId].length);
-          completedAulas += done;
+          const mData = mDoc.data();
+          modPctMap[mDoc.id] = mData;
           if (mData.cert) totalCerts++;
-          if (!mData.concluido && done > maxDone) {
-            maxDone     = done;
+        });
+
+        // Lê progresso por aula (inclui parciais) para cálculo real de progresso
+        const aSnap = await getDocs(collection(db, 'progresso', uid, 'aulas'));
+        const aulaPctMap = {};
+        aSnap.forEach(aDoc => {
+          const aData = aDoc.data();
+          if (aData.assistido === true) {
+            aulaPctMap[aDoc.id] = 100;
+          } else if (aData.percentualAssistido > 0) {
+            aulaPctMap[aDoc.id] = aData.percentualAssistido;
+          }
+        });
+
+        // Calcula progresso por módulo considerando frações parciais
+        modulos.forEach(mod => {
+          const aulas = aulasData[mod.id] || [];
+          if (aulas.length === 0) return;
+          const modSum = aulas.reduce((s, a) => s + (aulaPctMap[a.id] || 0), 0);
+          const modPct = modSum / aulas.length; // 0–100 ponderado
+          completedAulas += modPct / 100 * aulas.length;
+          const mData = modPctMap[mod.id] || {};
+          const doneFull = aulas.filter(a => aulaPctMap[a.id] === 100).length;
+          if (!mData.concluido && doneFull > maxDone) {
+            maxDone     = doneFull;
             moduloAtual = mod.nome;
           }
         });
